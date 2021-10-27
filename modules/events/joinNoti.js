@@ -1,7 +1,7 @@
-﻿module.exports.config = {
-	name: "join",
+module.exports.config = {
+	name: "joinNoti",
 	eventType: ["log:subscribe"],
-	version: "1.0.1",
+	version: "1.0.4",
 	credits: "Mirai Team",
 	description: "Thông báo bot hoặc người vào nhóm",
 	dependencies: {
@@ -9,12 +9,12 @@
 	}
 };
 
-module.exports.run = async function({ api, event }) {
+module.exports.run = async function({ api, event, Users }) {
 	const { join } = global.nodemodule["path"];
 	const { threadID } = event;
 	if (event.logMessageData.addedParticipants.some(i => i.userFbId == api.getCurrentUserID())) {
-		api.changeNickname(`[ ${global.config.PREFIX} ] • ${(!global.config.BOTNAME) ? "BOT Của Yang đẹp trai" : global.config.BOTNAME}`, threadID, api.getCurrentUserID());
-		return api.sendMessage(`TRƯỜNG GIANG BOT Connected successfully! \nCảm ơn bạn đã sử dụng con bot này, chúc bạn sử dụng vui vẻ UwU <3`, threadID);
+		api.changeNickname(`[ ${global.config.PREFIX} ] • ${(!global.config.BOTNAME) ? "Made by CatalizCS and SpermLord" : global.config.BOTNAME}`, threadID, api.getCurrentUserID());
+		return api.sendMessage(`Connected successfully! This bot was made by CatalizCS and SpermLord\nThank you for using our products, have fun UwU <3`, threadID);
 	}
 	else {
 		try {
@@ -23,7 +23,7 @@ module.exports.run = async function({ api, event }) {
 
 			const threadData = global.data.threadData.get(parseInt(threadID)) || {};
 			const path = join(__dirname, "cache", "joinGif");
-			const pathGif = join(path,`chao.mp4`);
+			const pathGif = join(path, `${threadID}.gif`);
 
 			var mentions = [], nameArray = [], memLength = [], i = 0;
 			
@@ -32,10 +32,16 @@ module.exports.run = async function({ api, event }) {
 				nameArray.push(userName);
 				mentions.push({ tag: userName, id });
 				memLength.push(participantIDs.length - i++);
+
+				if (!global.data.allUserID.includes(id)) {
+					await Users.createData(id, { name: userName, data: {} });
+					global.data.userName.set(id, userName);
+					global.data.allUserID.push(id);
+				}
 			}
 			memLength.sort((a, b) => a - b);
 			
-			(typeof threadData.customJoin == "undefined") ? msg = "Con lợn {name}.\nChúc mừng bạn đã đến với {threadName}.\n{type} và là thành viên thứ {soThanhVien} của nhóm xàm xí đú này 🥳♥" : msg = threadData.customJoin;
+			(typeof threadData.customJoin == "undefined") ? msg = "Welcome aboard {name}.\nChào mừng đã đến với {threadName}.\n{type} là thành viên thứ {soThanhVien} của nhóm 🥳" : msg = threadData.customJoin;
 			msg = msg
 			.replace(/\{name}/g, nameArray.join(', '))
 			.replace(/\{type}/g, (memLength.length > 1) ?  'các bạn' : 'bạn')

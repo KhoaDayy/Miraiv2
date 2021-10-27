@@ -1,20 +1,20 @@
 const fs = require("fs");
 module.exports.config = {
-  name: "Thái",
+  name: "Sóc chuột",
   version: "1.0.1",
   hasPermssion: 0,
   credits: "kynx",
-  description: "thái",
+  description: "sóc chuột",
   commandCategory: "Không cần dấu lệnh",
   usages: "noprefix",
   cooldowns: 5,
 };
 module.exports.handleEvent = function({ api, event }) {
   var { threadID, messageID } = event;
-  if (event.body.indexOf("Thái") == 0 || (event.body.indexOf("thái") == 0)) {
+  if (event.body.indexOf("Sóc chuột") == 0 || (event.body.indexOf("sóc chuột") == 0)) {
     var msg = {
-      body: "Thái Dance",
-      attachment: fs.createReadStream(__dirname + `/cache/thai.MOV`)
+      body: "Sóc chuột",
+      attachment: fs.createReadStream(__dirname + `/cache/kaqtl.mp4`)
     }
     return api.sendMessage(msg, threadID, messageID);
   }
